@@ -39,17 +39,24 @@ Figure 2.
 After that you choose one segment with the length of your motive in every sequence you
 did not choose (see Figure 2). 
 
-![Figure 3](img/pfm.png) 
+![Figure 3](img/pfm.png)
 
 Figure 3.
 
-Align these segments with eacht other and count the amount of elements at each position in order to create a so called Position-Frequency-Matrix (PFM) (see Figure 3).
-
-![Figure 4](img/CFV.png)
+![Figure 4](img/ppm.png)
 
 Figure 4.
 
+Align these segments with eacht other and count the amount of elements at each position in order to create a so called Position-Frequency-Matrix (PFM) (see Figure 3).
+In the next step ypu create a so called position probability matrix by adding a pseudocount to each element at each position and normalize by dividing each element at 
+each position through the summ of the column (see Figure 4). You add a pseudocount in order to avoid dividing through zero because often times the segments are rather short and do not 
+contain every element and it is still possible to encounter one in the rest of the sequence.
+
+![Figure 5](img/cfv.png)
+
+Figure r.
+
 Then you create a so called Frequency-Composite-Vector (FCV) by counting the amount of elements in the unchosen sequences without the elements that are part of the segments 
-that are used to create the PFM. 
+that are used to create the PFM.
 
 *)
