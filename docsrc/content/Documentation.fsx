@@ -54,7 +54,7 @@ contain every element and it is still possible to encounter one in the rest of t
 
 ![Figure 5](img/cfv.png)
 
-Figure r.
+Figure 5.
 
 Then you create a so called Frequency-Composite-Vector (FCV) by counting the amount of elements in the unchosen sequences without the elements that are part of the segments 
 that are used to create the PFM.
