@@ -50,9 +50,9 @@ module CompositeVector =
         frequencyCompositeVector
 
     ///// Create a FrequencyCompositeVector based on BioArrays and exclude the specified segments.
-    //let createFCVBy (motifLength:int) (resSources:BioArray.BioArray<#IBioItem>[]) (motifPositions:int[]) =
+    //let createFCVBy (motiveLength:int) (resSources:BioArray.BioArray<#IBioItem>[]) (motivePositions:int[]) =
     //    let backGroundCounts = new FrequencyCompositeVector()    
-    //    Array.map2 (fun (resSource:BioArray.BioArray<#IBioItem>) (position:int) -> Array.append resSource.[0..(position-1)] resSource.[(position+motifLength)..]) resSources motifPositions
+    //    Array.map2 (fun (resSource:BioArray.BioArray<#IBioItem>) (position:int) -> Array.append resSource.[0..(position-1)] resSource.[(position+motiveLength)..]) resSources motivePositions
     //    |> Array.concat
     //    |> Array.fold (fun bc bioItem -> (increaseInPlaceFCV bioItem bc)) backGroundCounts
 
@@ -70,9 +70,9 @@ module CompositeVector =
         backgroundFrequencyVector
 
     /// Create FrequencyCompositeVector based on BioArray and excludes the specified segment.
-    let createFCVWithout (motifLength:int) (position:int) (resSource:BioArray.BioArray<#IBioItem>) =
+    let createFCVWithout (motiveLength:int) (position:int) (resSource:BioArray.BioArray<#IBioItem>) =
         let backGroundCounts = new FrequencyCompositeVector()
-        Array.append resSource.[0..(position-1)] resSource.[(position+motifLength)..]
+        Array.append resSource.[0..(position-1)] resSource.[(position+motiveLength)..]
         |> Array.fold (fun bc bioItem -> (increaseInPlaceFCV bioItem bc)) backGroundCounts
 
     /// Create FrequencyCompositeVector based on BioArray.
@@ -215,8 +215,8 @@ module PositionMatrix =
         positionFrequencyMatrix
 
     /// Create new PositionFrequencyMatrix based on the sum of the positions of an array of Countmatrices.
-    let fusePositionFrequencyMatrices (motifLength:int) (countMatrices:PositionFrequencyMatrix[]) =
-        let positionFrequencyMatrix = new PositionFrequencyMatrix(motifLength)
+    let fusePositionFrequencyMatrices (motiveLength:int) (countMatrices:PositionFrequencyMatrix[]) =
+        let positionFrequencyMatrix = new PositionFrequencyMatrix(motiveLength)
         if countMatrices.Length > 0 then
             for cMatrix in countMatrices do
                 for column = 0 to (Array2D.length1 cMatrix.Matrix)-1 do
@@ -298,14 +298,14 @@ open CompositeVector
 module SiteSampler =
 
     /// Gives the startPosition and score of the segment with the highest PositionWeightMatrixScore based on the given sequence and PositionWeightMatrix.
-    let getBestPWMSsWithBPV (motifLength:int) (alphabet:#IBioItem[]) (source:BioArray.BioArray<#IBioItem>) (pcv:ProbabilityCompositeVector) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
+    let getBestPWMSsWithBPV (motiveLength:int) (alphabet:#IBioItem[]) (source:BioArray.BioArray<#IBioItem>) (pcv:ProbabilityCompositeVector) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
         let rec loop (n:int) (highValue:float) (highIndex:int) =
-            if n + motifLength > source.Length then log2(highValue), highIndex
+            if n + motiveLength > source.Length then log2(highValue), highIndex
             else
                 let tmp =
                     let segment =
                         Array.skip n source
-                        |> Array.take motifLength
+                        |> Array.take motiveLength
                     let pwMatrix = PositionMatrix.createPositionWeightMatrix alphabet pcv positionProbabilityMatrix
                     segment
                     |> PositionMatrix.calculateSegmentScoreBy pwMatrix
@@ -315,26 +315,26 @@ module SiteSampler =
 
     /// Checks whether downstream of given positions a higher InformationContent is present or not. 
     /// If yes, the new InformationContent and positions are given back, otherwise the old ones.
-    let getRightShiftedBestPWMSsWithBPV (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (startPositions:(float*int)[]) =
-        let rec loop (n:int) (acc:(float*int)[]) (bestMotif:(float*int)[]) =
+    let getRightShiftedBestPWMSsWithBPV (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (startPositions:(float*int)[]) =
+        let rec loop (n:int) (acc:(float*int)[]) (bestmotive:(float*int)[]) =
             if n = sources.Length then 
-                if (acc |> Array.map (fun item -> snd item)) = (bestMotif |> Array.map (fun item -> snd item)) then acc
+                if (acc |> Array.map (fun item -> snd item)) = (bestmotive |> Array.map (fun item -> snd item)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
                     let tmp = Array.append sources.[0..n-1] sources.[n+1..]
-                    Array.append bestMotif.[0..n-1] bestMotif.[n+1..]
-                    |> Array.map2 (fun (source:BioArray.BioArray<#IBioItem>) (_, position) -> if position <= source.Length - motifLength - 1 then position + 1 else position) tmp
+                    Array.append bestmotive.[0..n-1] bestmotive.[n+1..]
+                    |> Array.map2 (fun (source:BioArray.BioArray<#IBioItem>) (_, position) -> if position <= source.Length - motiveLength - 1 then position + 1 else position) tmp
                 let unChosenArrays =
                     Array.append sources.[0..n-1] sources.[n+1..]
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        (PositionMatrix.getSegment motifLength subSequence position) 
+                        (PositionMatrix.getSegment motiveLength subSequence position) 
                          |> PositionMatrix.createPFMOf) unChosenArrays unChosenStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                let tmp = getBestPWMSsWithBPV motifLength alphabet sources.[n] pcv positionProbabilityMatrix
+                let tmp = getBestPWMSsWithBPV motiveLength alphabet sources.[n] pcv positionProbabilityMatrix
                 loop 
                     (n + 1) 
                     (if fst tmp > fst acc.[n] then 
@@ -342,30 +342,30 @@ module SiteSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
+                    bestmotive
         loop 0 (Array.copy startPositions) (Array.copy startPositions)
 
     /// Checks whether upstream of given positions a higher PositionWeightMatrixScore is present or not. 
     /// If yes, the new PositionWeightMatrixScore and positions are given back, otherwise the old ones.
-    let getLeftShiftedBestPWMSsWithBPV (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (startPositions:(float*int)[]) =
-        let rec loop (n:int) (acc:(float*int)[]) (bestMotif:(float*int)[]) =
+    let getLeftShiftedBestPWMSsWithBPV (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (startPositions:(float*int)[]) =
+        let rec loop (n:int) (acc:(float*int)[]) (bestmotive:(float*int)[]) =
             if n = sources.Length then
-                if (acc |> Array.map (fun item -> snd item)) = (bestMotif |> Array.map (fun item -> snd item)) then acc
+                if (acc |> Array.map (fun item -> snd item)) = (bestmotive |> Array.map (fun item -> snd item)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
-                    Array.append bestMotif.[0..n-1] bestMotif.[n+1..]
+                    Array.append bestmotive.[0..n-1] bestmotive.[n+1..]
                     |> Array.map (fun (_, position) -> if position > 0 then position - 1 else position)
                 let unChosenArrays =
                     Array.append sources.[0..n-1] sources.[n+1..]
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        (PositionMatrix.getSegment motifLength subSequence position) 
+                        (PositionMatrix.getSegment motiveLength subSequence position) 
                          |> PositionMatrix.createPFMOf) unChosenArrays unChosenStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                let tmp = getBestPWMSsWithBPV motifLength alphabet sources.[n] pcv positionProbabilityMatrix
+                let tmp = getBestPWMSsWithBPV motiveLength alphabet sources.[n] pcv positionProbabilityMatrix
                 loop 
                     (n + 1) 
                     (if fst tmp > fst acc.[n] then 
@@ -373,15 +373,15 @@ module SiteSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
+                    bestmotive
         loop 0 (Array.copy startPositions) (Array.copy startPositions)
 
-    /// Checks the given Sequence for the existence of a conserved motif, by scoring each segment based on the given start positions.
+    /// Checks the given Sequence for the existence of a conserved motive, by scoring each segment based on the given start positions.
     /// The new PositionWeightMatrix is calculated and updated each iteration if segments with higher scores are found until convergence.
-    let findBestMotifWithStartPosition (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (startPositions:(float*int)[]) =        
-        let rec loop (n:int) acc bestMotif =
+    let findBestmotiveWithStartPosition (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (startPositions:(float*int)[]) =        
+        let rec loop (n:int) acc bestmotive =
             if n = sources.Length then 
-                if (acc |> Array.map (fun item -> snd item)) = (bestMotif |> Array.map (fun item -> snd item)) then acc
+                if (acc |> Array.map (fun item -> snd item)) = (bestmotive |> Array.map (fun item -> snd item)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
@@ -391,12 +391,12 @@ module SiteSampler =
                     Array.append sources.[0..n-1] sources.[n+1..]
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        (PositionMatrix.getSegment motifLength subSequence position) 
+                        (PositionMatrix.getSegment motiveLength subSequence position) 
                          |> PositionMatrix.createPFMOf) unChosenArrays unChosenStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                let tmp = getBestPWMSsWithBPV motifLength alphabet sources.[n] pcv positionProbabilityMatrix
+                let tmp = getBestPWMSsWithBPV motiveLength alphabet sources.[n] pcv positionProbabilityMatrix
                 loop 
                     (n + 1) 
                     (if fst tmp > fst acc.[n] then 
@@ -404,12 +404,12 @@ module SiteSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
+                    bestmotive
         loop 0 (Array.copy startPositions) (Array.copy startPositions)
 
     /// Creates a random start position for each sequence and calculates a PositionWeightMatrix based on the. 
     /// The PositionWeithMatrix is then used to find the best PositionWeightMatrixScore for each sequence and gives you back the new Positions and PositionWeightMatrixScores.
-    let getPWMOfRandomStartsWithBPV (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =    
+    let getPWMOfRandomStartsWithBPV (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =    
         let rec loop (n:int) acc =
             if n = sources.Length then (List.rev acc) |> List.toArray
             else
@@ -418,20 +418,20 @@ module SiteSampler =
                 let randomStartPositions = 
                     unChosenArrays
                     |> Array.map (fun unChosen ->
-                        PositionMatrix.getRandomNumberInSequence motifLength unChosen)
+                        PositionMatrix.getRandomNumberInSequence motiveLength unChosen)
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        (PositionMatrix.getSegment motifLength subSequence position) 
+                        (PositionMatrix.getSegment motiveLength subSequence position) 
                          |> PositionMatrix.createPFMOf) unChosenArrays randomStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                loop (n + 1) (getBestPWMSsWithBPV motifLength alphabet sources.[n] pcv positionProbabilityMatrix::acc)
+                loop (n + 1) (getBestPWMSsWithBPV motiveLength alphabet sources.[n] pcv positionProbabilityMatrix::acc)
         loop 0 []
 
     /// Repeats the search for the best InformationContent of each found PositionWeightMatrix until they converge or a maximum number of repetitions.
     /// Each iteration it is checked if better InformationContent is found or not.
-    let getMotifsWithBestInformationContentWithBPV (numberOfRepetitions:int) (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =
+    let getmotivesWithBestInformationContentWithBPV (numberOfRepetitions:int) (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =
         let rec loop (n:int) (acc:(float*int)[]) (bestPWMS:(float*int)[]) =
             if n > numberOfRepetitions then
                 bestPWMS
@@ -451,22 +451,22 @@ module SiteSampler =
                         loop (n + 1) [||] (if Array.isEmpty acc then bestPWMS else acc)
                     else
                         let pwms =
-                            getPWMOfRandomStartsWithBPV motifLength pseudoCount alphabet sources pcv
-                            |> findBestMotifWithStartPosition motifLength pseudoCount alphabet sources pcv
-                            |> getLeftShiftedBestPWMSsWithBPV motifLength pseudoCount alphabet sources pcv
-                            |> getRightShiftedBestPWMSsWithBPV motifLength pseudoCount alphabet sources pcv
+                            getPWMOfRandomStartsWithBPV motiveLength pseudoCount alphabet sources pcv
+                            |> findBestmotiveWithStartPosition motiveLength pseudoCount alphabet sources pcv
+                            |> getLeftShiftedBestPWMSsWithBPV motiveLength pseudoCount alphabet sources pcv
+                            |> getRightShiftedBestPWMSsWithBPV motiveLength pseudoCount alphabet sources pcv
                         loop (n + 1) pwms bestPWMS
         loop 0 [||] [|0., 0|]
 
     /// Gives the startPosition and score of the segment with the highest PositionWeightMatrixScore based on the given sequence and PositionWeightMatrix.
-    let getBestPWMSs (motifLength:int) (alphabet:#IBioItem[]) (pseudoCount:float) (source:BioArray.BioArray<#IBioItem>) (fcVector:FrequencyCompositeVector) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
+    let getBestPWMSs (motiveLength:int) (alphabet:#IBioItem[]) (pseudoCount:float) (source:BioArray.BioArray<#IBioItem>) (fcVector:FrequencyCompositeVector) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
         let rec loop (n:int) (highValue:float) (highIndex:int) =
-            if n + motifLength > source.Length then log2(highValue), highIndex
+            if n + motiveLength > source.Length then log2(highValue), highIndex
             else
                 let tmp =
                     let segment =
                         Array.skip n source
-                        |> Array.take motifLength
+                        |> Array.take motiveLength
                     let pcv =
                         increaseInPlaceFCVOf source fcVector
                         |> substractSegmentCountsFrom segment 
@@ -480,30 +480,30 @@ module SiteSampler =
 
     /// Checks whether downstream of given positions a higher InformationContent is present or not. 
     /// If yes, the new InformationContent and positions are given back, otherwise the old ones.
-    let getRightShiftedBestPWMSs (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (startPositions:(float*int)[]) =
-        let rec loop (n:int) (acc:(float*int)[]) (bestMotif:(float*int)[]) =
+    let getRightShiftedBestPWMSs (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (startPositions:(float*int)[]) =
+        let rec loop (n:int) (acc:(float*int)[]) (bestmotive:(float*int)[]) =
             if n = sources.Length then 
-                if (acc |> Array.map (fun item -> snd item)) = (bestMotif |> Array.map (fun item -> snd item)) then acc
+                if (acc |> Array.map (fun item -> snd item)) = (bestmotive |> Array.map (fun item -> snd item)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
                     let tmp = Array.append sources.[0..n-1] sources.[n+1..]
-                    Array.append bestMotif.[0..n-1] bestMotif.[n+1..]
-                    |> Array.map2 (fun (source:BioArray.BioArray<#IBioItem>) (_, position) -> if position <= source.Length - motifLength - 1 then position + 1 else position) tmp
+                    Array.append bestmotive.[0..n-1] bestmotive.[n+1..]
+                    |> Array.map2 (fun (source:BioArray.BioArray<#IBioItem>) (_, position) -> if position <= source.Length - motiveLength - 1 then position + 1 else position) tmp
                 let unChosenArrays =
                     Array.append sources.[0..n-1] sources.[n+1..]
                 let frequencyCompositeVector =
                     Array.map2 (fun unchosenArray position ->
-                        createFCVWithout motifLength position unchosenArray) unChosenArrays unChosenStartPositions
+                        createFCVWithout motiveLength position unchosenArray) unChosenArrays unChosenStartPositions
                     |> fuseFrequencyVectors alphabet
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        PositionMatrix.getSegment motifLength subSequence position
+                        PositionMatrix.getSegment motiveLength subSequence position
                         |> PositionMatrix.createPFMOf) unChosenArrays unChosenStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                let tmp = getBestPWMSs motifLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix
+                let tmp = getBestPWMSs motiveLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix
                 loop 
                     (n + 1) 
                     (if fst tmp > fst acc.[n] then 
@@ -511,34 +511,34 @@ module SiteSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
+                    bestmotive
         loop 0 (Array.copy startPositions) (Array.copy startPositions)
 
     /// Checks whether upstream of given positions a higher PositionWeightMatrixScore is present or not. 
     /// If yes, the new PositionWeightMatrixScore and positions are given back, otherwise the old ones.
-    let getLeftShiftedBestPWMSs (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (startPositions:(float*int)[]) =
-        let rec loop (n:int) (acc:(float*int)[]) (bestMotif:(float*int)[]) =
+    let getLeftShiftedBestPWMSs (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (startPositions:(float*int)[]) =
+        let rec loop (n:int) (acc:(float*int)[]) (bestmotive:(float*int)[]) =
             if n = sources.Length then
-                if (acc |> Array.map (fun item -> snd item)) = (bestMotif |> Array.map (fun item -> snd item)) then acc
+                if (acc |> Array.map (fun item -> snd item)) = (bestmotive |> Array.map (fun item -> snd item)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
-                    Array.append bestMotif.[0..n-1] bestMotif.[n+1..]
+                    Array.append bestmotive.[0..n-1] bestmotive.[n+1..]
                     |> Array.map (fun (_, position) -> if position > 0 then position - 1 else position)
                 let unChosenArrays =
                     Array.append sources.[0..n-1] sources.[n+1..]
                 let frequencyCompositeVector =
                     Array.map2 (fun unchosenArray position ->
-                        createFCVWithout motifLength position unchosenArray) unChosenArrays unChosenStartPositions
+                        createFCVWithout motiveLength position unchosenArray) unChosenArrays unChosenStartPositions
                     |> fuseFrequencyVectors alphabet
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        PositionMatrix.getSegment motifLength subSequence position
+                        PositionMatrix.getSegment motiveLength subSequence position
                         |> PositionMatrix.createPFMOf) unChosenArrays unChosenStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                let tmp = getBestPWMSs motifLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix
+                let tmp = getBestPWMSs motiveLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix
                 loop 
                     (n + 1) 
                     (if fst tmp > fst acc.[n] then 
@@ -546,15 +546,15 @@ module SiteSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
+                    bestmotive
         loop 0 (Array.copy startPositions) (Array.copy startPositions)
 
-    /// Checks the given sequence for the existence of a conserved motif, by scoring each segment based on the given start positions.
+    /// Checks the given sequence for the existence of a conserved motive, by scoring each segment based on the given start positions.
     /// The new PositionWeightMatrix is calculated and updated at each iteration if segments with higher scores are found until convergence.
-    let getBestPWMSsWithStartPositions (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (startPositions:(float*int)[]) =        
-        let rec loop (n:int) acc bestMotif =
+    let getBestPWMSsWithStartPositions (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (startPositions:(float*int)[]) =        
+        let rec loop (n:int) acc bestmotive =
             if n = sources.Length then 
-                if (acc |> Array.map (fun item -> snd item)) = (bestMotif |> Array.map (fun item -> snd item)) then acc
+                if (acc |> Array.map (fun item -> snd item)) = (bestmotive |> Array.map (fun item -> snd item)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
@@ -564,16 +564,16 @@ module SiteSampler =
                     Array.append sources.[0..n-1] sources.[n+1..]
                 let frequencyCompositeVector =
                     Array.map2 (fun unchosenArray position ->
-                        createFCVWithout motifLength position unchosenArray) unChosenArrays unChosenStartPositions
+                        createFCVWithout motiveLength position unchosenArray) unChosenArrays unChosenStartPositions
                     |> fuseFrequencyVectors alphabet
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        PositionMatrix.getSegment motifLength subSequence position
+                        PositionMatrix.getSegment motiveLength subSequence position
                         |> PositionMatrix.createPFMOf) unChosenArrays unChosenStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                let tmp = getBestPWMSs motifLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix
+                let tmp = getBestPWMSs motiveLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix
                 loop 
                     (n + 1) 
                     (if fst tmp > fst acc.[n] then 
@@ -581,12 +581,12 @@ module SiteSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
+                    bestmotive
         loop 0 (Array.copy startPositions) (Array.copy startPositions)
 
     /// Creates a random start position for each sequence and calculates a PositionWeightMatrix based on the. 
     /// The PositionWeithMatrix is then used to find the best PositionWeightMatrixScore for each sequence and gives you back the new Positions and PositionWeightMatrixScores.
-    let getPWMOfRandomStarts (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
+    let getPWMOfRandomStarts (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
         let rec loop (n:int) acc =
             if n = sources.Length then (List.rev acc) |> List.toArray
             else
@@ -595,24 +595,24 @@ module SiteSampler =
                 let randomStartPositions = 
                     unChosenArrays
                     |> Array.map (fun unChosen ->
-                        PositionMatrix.getRandomNumberInSequence motifLength unChosen)
+                        PositionMatrix.getRandomNumberInSequence motiveLength unChosen)
                 let frequencyCompositeVector =
                     Array.map2 (fun unchosenArray position ->
-                        createFCVWithout motifLength position unchosenArray) unChosenArrays randomStartPositions
+                        createFCVWithout motiveLength position unchosenArray) unChosenArrays randomStartPositions
                     |> fuseFrequencyVectors alphabet
                 let positionProbabilityMatrix =
                     Array.map2 (fun subSequence position -> 
-                        PositionMatrix.getSegment motifLength subSequence position
+                        PositionMatrix.getSegment motiveLength subSequence position
                         |> PositionMatrix.createPFMOf) unChosenArrays randomStartPositions
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
-                loop (n + 1) (getBestPWMSs motifLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix::acc)
+                loop (n + 1) (getBestPWMSs motiveLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix::acc)
         loop 0 []
 
     /// Repeats the search for the best InformationContent of each found PositionWeightMatrix until they converge or a maximum number of repetitions.
     /// Each iteration it is checked if better InformationContent is found or not.
-    let getMotifsWithBestInformationContent (numberOfRepetitions:int) (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
+    let getmotivesWithBestInformationContent (numberOfRepetitions:int) (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
         let rec loop (n:int) (acc:(float*int)[]) (bestPWMS:(float*int)[]) =
             if n > numberOfRepetitions then
                 bestPWMS
@@ -632,16 +632,16 @@ module SiteSampler =
                         loop (n + 1) [||] (if Array.isEmpty acc then bestPWMS else acc)
                     else
                         let pwms =
-                            getPWMOfRandomStarts motifLength pseudoCount alphabet sources
-                            |> getBestPWMSsWithStartPositions motifLength pseudoCount alphabet sources
-                            |> getLeftShiftedBestPWMSs motifLength pseudoCount alphabet sources
-                            |> getRightShiftedBestPWMSs motifLength pseudoCount alphabet sources
+                            getPWMOfRandomStarts motiveLength pseudoCount alphabet sources
+                            |> getBestPWMSsWithStartPositions motiveLength pseudoCount alphabet sources
+                            |> getLeftShiftedBestPWMSs motiveLength pseudoCount alphabet sources
+                            |> getRightShiftedBestPWMSs motiveLength pseudoCount alphabet sources
                         loop (n + 1) pwms bestPWMS
         loop 0 [||] [|0., 0|]
 
     /// Creates a random start position for each sequence and calculates a PositionWeightMatrix based on the. 
     /// The PositionWeithMatrix is then used to find the best PositionWeightMatrixScore for each sequence and gives you back the new Positions and PositionWeightMatrixScores.
-    let getMotifsWithBestPWMSOfPPM (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
+    let getmotivesWithBestPWMSOfPPM (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
         let rec loop (n:int) acc =
             if n = sources.Length then (List.rev acc) |> List.toArray
             else
@@ -650,18 +650,18 @@ module SiteSampler =
                 let randomStartPositions = 
                     unChosenArrays
                     |> Array.map (fun unChosen ->
-                        PositionMatrix.getRandomNumberInSequence motifLength unChosen)
+                        PositionMatrix.getRandomNumberInSequence motiveLength unChosen)
                 let frequencyCompositeVector =
                     Array.map2 (fun unchosenArray position ->
-                        createFCVWithout motifLength position unchosenArray) 
+                        createFCVWithout motiveLength position unchosenArray) 
                             unChosenArrays randomStartPositions
                     |> fuseFrequencyVectors alphabet
-                loop (n + 1) (getBestPWMSs motifLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix::acc)
+                loop (n + 1) (getBestPWMSs motiveLength alphabet pseudoCount sources.[n] frequencyCompositeVector positionProbabilityMatrix::acc)
         loop 0 []
 
     /// Repeats the search for the best InformationContent of each found PositionWeightMatrix until they converge or a maximum number of repetitions.
     /// Each iteration it is checked if better InformationContent is found or not.
-    let getBestInformationContentOfPPM (numberOfRepetitions:int) (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
+    let getBestInformationContentOfPPM (numberOfRepetitions:int) (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
         let rec loop (n:int) (acc:(float*int)[]) (bestPWMS:(float*int)[]) =
             if n > numberOfRepetitions then
                 bestPWMS
@@ -681,45 +681,45 @@ module SiteSampler =
                         loop (n + 1) [||] (if Array.isEmpty acc then bestPWMS else acc)
                     else
                         let pwms =
-                            getMotifsWithBestPWMSOfPPM motifLength pseudoCount alphabet sources positionProbabilityMatrix
-                            |> getBestPWMSsWithStartPositions motifLength pseudoCount alphabet sources
-                            |> getLeftShiftedBestPWMSs motifLength pseudoCount alphabet sources
-                            |> getRightShiftedBestPWMSs motifLength pseudoCount alphabet sources
+                            getmotivesWithBestPWMSOfPPM motiveLength pseudoCount alphabet sources positionProbabilityMatrix
+                            |> getBestPWMSsWithStartPositions motiveLength pseudoCount alphabet sources
+                            |> getLeftShiftedBestPWMSs motiveLength pseudoCount alphabet sources
+                            |> getRightShiftedBestPWMSs motiveLength pseudoCount alphabet sources
                         loop (n + 1) pwms bestPWMS
         loop 0 [||] [|0., 0|]
 
-    let doSiteSamplingWithBPV (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =
-        getPWMOfRandomStartsWithBPV motifLength pseudoCount alphabet sources pcv
-        |> findBestMotifWithStartPosition motifLength pseudoCount alphabet sources pcv
-        |> getLeftShiftedBestPWMSsWithBPV motifLength pseudoCount alphabet sources pcv
-        |> getRightShiftedBestPWMSsWithBPV motifLength pseudoCount alphabet sources pcv
+    let doSiteSamplingWithBPV (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =
+        getPWMOfRandomStartsWithBPV motiveLength pseudoCount alphabet sources pcv
+        |> findBestmotiveWithStartPosition motiveLength pseudoCount alphabet sources pcv
+        |> getLeftShiftedBestPWMSsWithBPV motiveLength pseudoCount alphabet sources pcv
+        |> getRightShiftedBestPWMSsWithBPV motiveLength pseudoCount alphabet sources pcv
 
-    let doSiteSampling (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
-        getPWMOfRandomStarts motifLength pseudoCount alphabet sources
-        |> getBestPWMSsWithStartPositions motifLength pseudoCount alphabet sources
-        |> getLeftShiftedBestPWMSs motifLength pseudoCount alphabet sources
-        |> getRightShiftedBestPWMSs motifLength pseudoCount alphabet sources
+    let doSiteSampling (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
+        getPWMOfRandomStarts motiveLength pseudoCount alphabet sources
+        |> getBestPWMSsWithStartPositions motiveLength pseudoCount alphabet sources
+        |> getLeftShiftedBestPWMSs motiveLength pseudoCount alphabet sources
+        |> getRightShiftedBestPWMSs motiveLength pseudoCount alphabet sources
 
-    let doSiteSamplingWithPPM (motifLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (ppM:PositionMatrix.PositionProbabilityMatrix) =
-        getMotifsWithBestPWMSOfPPM motifLength pseudoCount alphabet sources ppM
-        |> getBestPWMSsWithStartPositions motifLength pseudoCount alphabet sources
-        |> getLeftShiftedBestPWMSs motifLength pseudoCount alphabet sources
-        |> getRightShiftedBestPWMSs motifLength pseudoCount alphabet sources
+    let doSiteSamplingWithPPM (motiveLength:int) (pseudoCount:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (ppM:PositionMatrix.PositionProbabilityMatrix) =
+        getmotivesWithBestPWMSOfPPM motiveLength pseudoCount alphabet sources ppM
+        |> getBestPWMSsWithStartPositions motiveLength pseudoCount alphabet sources
+        |> getLeftShiftedBestPWMSs motiveLength pseudoCount alphabet sources
+        |> getRightShiftedBestPWMSs motiveLength pseudoCount alphabet sources
 
-module MotifSampler =
+module motiveSampler =
 
-    /// Contains the information of the probability and the start position(s) of the found motifs(s). 
-    type MotifIndex =
+    /// Contains the information of the probability and the start position(s) of the found motives(s). 
+    type motiveIndex =
         {
             PWMS        : float
             Positions   : int list
         }
 
-    /// Creates a MotifIndex based on the probability of the given segement(s) start position(s).
-    let createMotifIndex pwms pos =
+    /// Creates a motiveIndex based on the probability of the given segement(s) start position(s).
+    let createmotiveIndex pwms pos =
         {
-            MotifIndex.PWMS         = pwms
-            MotifIndex.Positions    = pos
+            motiveIndex.PWMS         = pwms
+            motiveIndex.Positions    = pos
         }
 
     /// Calculates all possible segment combination of m segments, which do not overlap in the given width 
@@ -735,15 +735,15 @@ module MotifSampler =
                                 if log2(fst x*prob) > cutOff then
                                     yield! loop (fst x*prob) (snd x::positions) (n - 1) xs
                         if n >= 0 then yield! loop prob positions n xs
-                    | 0, [] -> yield createMotifIndex (log2(prob)) positions
+                    | 0, [] -> yield createmotiveIndex (log2(prob)) positions
                     | _, [] -> () 
                 }
         loop 1. [] m set
         |> List.ofSeq
 
-    /// Normalizes the probabilities of all MotifMemories to the sum of all probabilities and picks one by random, 
+    /// Normalizes the probabilities of all motiveMemories to the sum of all probabilities and picks one by random, 
     /// but those with a higher value have a higher chance to get picked.
-    let rouletteWheelSelection (pick:float) (items:MotifIndex list) =
+    let rouletteWheelSelection (pick:float) (items:motiveIndex list) =
         let normalizedItems =
             let sum = List.sum (items |> List.map (fun item -> item.PWMS))
             items
@@ -755,16 +755,16 @@ module MotifSampler =
 
     /// Calculates the normalized segment score based on the given PositionWeightMatrix and 
     /// BackGroundProbabilityVecor of all segment combinations of a given sequence. 
-    /// The amount of combinations is given by the amount of motifs.
-    let calculateNormalizedSegmentScores (cutOff:float) (motifAmount:int) (motifLength:int) (source:BioArray.BioArray<#IBioItem>) (pcv:ProbabilityCompositeVector) (pwMatrix:PositionMatrix.PositionWeightMatrix) =
+    /// The amount of combinations is given by the amount of motives.
+    let calculateNormalizedSegmentScores (cutOff:float) (motiveAmount:int) (motiveLength:int) (source:BioArray.BioArray<#IBioItem>) (pcv:ProbabilityCompositeVector) (pwMatrix:PositionMatrix.PositionWeightMatrix) =
         let segments =
             let rec loop n acc =
-                if n + motifLength = source.Length+1 then List.rev acc
+                if n + motiveLength = source.Length+1 then List.rev acc
                 else
                     let tmp =
                         source
                         |> Array.skip n
-                        |> (fun items -> Array.take motifLength items, n)
+                        |> (fun items -> Array.take motiveLength items, n)
                     loop (n+1) (tmp::acc)
             loop 0 []
         let segmentScores =
@@ -774,21 +774,21 @@ module MotifSampler =
         let backGroundScores =
             segments
             |> List.map (fun segment -> calculateSegmentScoreBy pcv (fst segment))
-            |> List.map (fun segmentScore -> createMotifIndex segmentScore [])
+            |> List.map (fun segmentScore -> createmotiveIndex segmentScore [])
         let tmp =
             let rec loop n acc =
-                if n > motifAmount then List.rev acc
-                else loop (n+1) (calculatePWMsForSegmentCombinations cutOff motifLength n segmentScores::acc)
+                if n > motiveAmount then List.rev acc
+                else loop (n+1) (calculatePWMsForSegmentCombinations cutOff motiveLength n segmentScores::acc)
             loop 1 [backGroundScores]
         tmp
         |> List.concat
 
-    /// Checks the given sequence for the existence of conserved motif(s), by scoring each segment and segment combination based on the given start positions.
+    /// Checks the given sequence for the existence of conserved motive(s), by scoring each segment and segment combination based on the given start positions.
     /// The new PositionWeightMatrix is calculated and updated each iteration if segments with higher scores are found until convergence. 
-    let findBestMotifPositionsWithStartPositionByPCV (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (motifMem:MotifIndex[]) =
-        let rec loop (n:int) acc bestMotif =
+    let findBestmotivePositionsWithStartPositionByPCV (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (motiveMem:motiveIndex[]) =
+        let rec loop (n:int) acc bestmotive =
             if n = sources.Length then 
-                if (acc |> Array.map (fun item -> item.Positions)) = (bestMotif |> Array.map (fun item -> item.Positions)) then acc
+                if (acc |> Array.map (fun item -> item.Positions)) = (bestmotive |> Array.map (fun item -> item.Positions)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
@@ -800,15 +800,15 @@ module MotifSampler =
                     Array.map2 (fun subSequence positions -> 
                         positions
                         |> Array.map (fun position -> 
-                            PositionMatrix.getSegment motifLength subSequence position
+                            PositionMatrix.getSegment motiveLength subSequence position
                             |> PositionMatrix.createPFMOf)) unChosenArrays unChosenStartPositions
                     |> Array.concat
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
                 let positionWeightMatrix = PositionMatrix.createPositionWeightMatrix alphabet pcv positionProbabilityMatrix
                 let tmp = 
-                    calculateNormalizedSegmentScores cutOff motifAmount motifLength sources.[n] pcv positionWeightMatrix
+                    calculateNormalizedSegmentScores cutOff motiveAmount motiveLength sources.[n] pcv positionWeightMatrix
                     |> List.sortByDescending (fun item -> item.PWMS)
                     |> List.head
                 loop 
@@ -818,20 +818,20 @@ module MotifSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
-        loop 0 (Array.copy motifMem) (Array.copy motifMem)
+                    bestmotive
+        loop 0 (Array.copy motiveMem) (Array.copy motiveMem)
 
 
-    /// Checks the given Sequence for the existence of conserved motif(s), by scoring each segment and segment combination based on the given start positions.
+    /// Checks the given Sequence for the existence of conserved motive(s), by scoring each segment and segment combination based on the given start positions.
     /// The nex segments for the nex PositionWeightMatrix are picked by chance after calculating the segment scores for each possible combination 
     /// but those with higher scores have a higher chance to be picked.
-    let findBestMotifPositionsWithStartPositionsByPCV (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (motifMem:MotifIndex[]) =
+    let findBestmotivePositionsWithStartPositionsByPCV (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) (motiveMem:motiveIndex[]) =
         let rnd = new System.Random()
         let rec loop (n:int) acc =
             if n = sources.Length then (List.rev acc) |> Array.ofList
             else
                 let unChosenStartPositions =
-                    Array.append motifMem.[0..n-1] motifMem.[n+1..]
+                    Array.append motiveMem.[0..n-1] motiveMem.[n+1..]
                     |> Array.map (fun item -> item.Positions |> List.toArray)
                 let unChosenArrays =
                     Array.append sources.[0..n-1] sources.[n+1..]
@@ -839,22 +839,22 @@ module MotifSampler =
                     Array.map2 (fun subSequence positions -> 
                         positions
                         |> Array.map (fun position -> 
-                            PositionMatrix.getSegment motifLength subSequence position
+                            PositionMatrix.getSegment motiveLength subSequence position
                             |> PositionMatrix.createPFMOf)) unChosenArrays unChosenStartPositions
                     |> Array.concat
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
                 let positionWeightMatrix = PositionMatrix.createPositionWeightMatrix alphabet pcv positionProbabilityMatrix
                 let tmp = 
-                    calculateNormalizedSegmentScores cutOff motifAmount motifLength sources.[n] pcv positionWeightMatrix
+                    calculateNormalizedSegmentScores cutOff motiveAmount motiveLength sources.[n] pcv positionWeightMatrix
                     |> rouletteWheelSelection (rnd.NextDouble())
                 loop (n+1) (tmp::acc)
         loop 0 []
 
-    ///Repeats the motif sampler until convergence or until a given number of repetitions is done.
-    let findBestInormationContentContainingMotifsWithPCV (numberOfRepetitions:int) (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =
-        let rec loop (n:int) (acc:MotifIndex[]) (bestPWMS:MotifIndex[]) =
+    ///Repeats the motive sampler until convergence or until a given number of repetitions is done.
+    let findBestInormationContentContainingmotivesWithPCV (numberOfRepetitions:int) (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (pcv:ProbabilityCompositeVector) =
+        let rec loop (n:int) (acc:motiveIndex[]) (bestPWMS:motiveIndex[]) =
             if n > numberOfRepetitions then
                 bestPWMS
             else
@@ -873,19 +873,19 @@ module MotifSampler =
                         loop (n + 1) [||] (if Array.isEmpty acc then bestPWMS else acc)
                     else
                         let pwms =
-                            SiteSampler.getPWMOfRandomStartsWithBPV motifLength pseudoCount alphabet sources pcv
-                            |> Array.map (fun (prob, position) -> createMotifIndex prob [position])
-                            |> findBestMotifPositionsWithStartPositionsByPCV motifAmount motifLength pseudoCount cutOff alphabet sources pcv
-                            |> findBestMotifPositionsWithStartPositionByPCV motifAmount motifLength pseudoCount cutOff alphabet sources pcv
+                            SiteSampler.getPWMOfRandomStartsWithBPV motiveLength pseudoCount alphabet sources pcv
+                            |> Array.map (fun (prob, position) -> createmotiveIndex prob [position])
+                            |> findBestmotivePositionsWithStartPositionsByPCV motiveAmount motiveLength pseudoCount cutOff alphabet sources pcv
+                            |> findBestmotivePositionsWithStartPositionByPCV motiveAmount motiveLength pseudoCount cutOff alphabet sources pcv
                         loop (n + 1) pwms bestPWMS
-        loop 0 [||] [|createMotifIndex 0. []|]
+        loop 0 [||] [|createmotiveIndex 0. []|]
 
-    /// Checks the given Sequence for the existence of conserved motif(s), by scoring each segment and segment combination based on the given start positions.
+    /// Checks the given Sequence for the existence of conserved motive(s), by scoring each segment and segment combination based on the given start positions.
     /// The new PositionWeightMatrix is calculated and updated each iteration if segments with higher scores are found until convergence. 
-    let findBestMotifIndicesWithStartPositions (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (motifMem:MotifIndex[]) =
-        let rec loop (n:int) acc bestMotif =
+    let findBestmotiveIndicesWithStartPositions (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (motiveMem:motiveIndex[]) =
+        let rec loop (n:int) acc bestmotive =
             if n = sources.Length then 
-                if (acc |> Array.map (fun item -> item.Positions)) = (bestMotif |> Array.map (fun item -> item.Positions)) then acc
+                if (acc |> Array.map (fun item -> item.Positions)) = (bestmotive |> Array.map (fun item -> item.Positions)) then acc
                 else loop 0 acc (Array.copy acc)
             else
                 let unChosenStartPositions =
@@ -897,7 +897,7 @@ module MotifSampler =
                     Array.map2 (fun array positions -> 
                         positions
                         |> Array.map (fun position -> 
-                            createFCVWithout motifLength position array)
+                            createFCVWithout motiveLength position array)
                                 ) unChosenArrays unChosenStartPositions
                     |> Array.concat
                     |> fuseFrequencyVectors alphabet
@@ -907,15 +907,15 @@ module MotifSampler =
                     Array.map2 (fun subSequence positions -> 
                         positions
                         |> Array.map (fun position -> 
-                            PositionMatrix.getSegment motifLength subSequence position
+                            PositionMatrix.getSegment motiveLength subSequence position
                             |> PositionMatrix.createPFMOf)) unChosenArrays unChosenStartPositions
                     |> Array.concat
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
                 let positionWeightMatrix = PositionMatrix.createPositionWeightMatrix alphabet backgroundProbabilityVector positionProbabilityMatrix
                 let tmp = 
-                    calculateNormalizedSegmentScores cutOff motifAmount motifLength sources.[n] backgroundProbabilityVector positionWeightMatrix
+                    calculateNormalizedSegmentScores cutOff motiveAmount motiveLength sources.[n] backgroundProbabilityVector positionWeightMatrix
                     |> List.sortByDescending (fun item -> item.PWMS)
                     |> List.head
                 loop 
@@ -925,20 +925,20 @@ module MotifSampler =
                         acc
                      else acc                    
                     )
-                    bestMotif
-        loop 0 (Array.copy motifMem) (Array.copy motifMem)
+                    bestmotive
+        loop 0 (Array.copy motiveMem) (Array.copy motiveMem)
 
 
-    /// Checks the given Sequence for the existence of conserved motif(s), by scoring each segment and segment combination based on the given start positions.
+    /// Checks the given Sequence for the existence of conserved motive(s), by scoring each segment and segment combination based on the given start positions.
     /// The nex segments for the nex PositionWeightMatrix are picked by chance after calculating the segment scores for each possible combination 
     /// but those with higher scores have a higher chance to be picked.
-    let findBestMotifIndicesByWithStartPositions (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (motifMem:MotifIndex[]) =
+    let findBestmotiveIndicesByWithStartPositions (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (motiveMem:motiveIndex[]) =
         let rnd = new System.Random()
         let rec loop (n:int) acc =
             if n = sources.Length then (List.rev acc) |> Array.ofList
             else
                 let unChosenStartPositions =
-                    Array.append motifMem.[0..n-1] motifMem.[n+1..]
+                    Array.append motiveMem.[0..n-1] motiveMem.[n+1..]
                     |> Array.map (fun item -> item.Positions |> List.toArray)
                 let unChosenArrays =
                     Array.append sources.[0..n-1] sources.[n+1..]
@@ -946,7 +946,7 @@ module MotifSampler =
                     Array.map2 (fun array positions -> 
                         positions
                         |> Array.map (fun position -> 
-                            createFCVWithout motifLength position array)
+                            createFCVWithout motiveLength position array)
                                 ) unChosenArrays unChosenStartPositions
                     |> Array.concat
                     |> fuseFrequencyVectors alphabet
@@ -956,22 +956,22 @@ module MotifSampler =
                     Array.map2 (fun subSequence positions -> 
                         positions
                         |> Array.map (fun position -> 
-                            PositionMatrix.getSegment motifLength subSequence position
+                            PositionMatrix.getSegment motiveLength subSequence position
                             |> PositionMatrix.createPFMOf)) unChosenArrays unChosenStartPositions
                     |> Array.concat
-                    |> PositionMatrix.fusePositionFrequencyMatrices motifLength
+                    |> PositionMatrix.fusePositionFrequencyMatrices motiveLength
                     |> PositionMatrix.createPPMOf
                     |> PositionMatrix.normalizePPM (sources.Length - 1) alphabet pseudoCount
                 let positionWeightMatrix = PositionMatrix.createPositionWeightMatrix alphabet backgroundProbabilityVector positionProbabilityMatrix
                 let tmp = 
-                    calculateNormalizedSegmentScores cutOff motifAmount motifLength sources.[n] backgroundProbabilityVector positionWeightMatrix
+                    calculateNormalizedSegmentScores cutOff motiveAmount motiveLength sources.[n] backgroundProbabilityVector positionWeightMatrix
                     |> rouletteWheelSelection (rnd.NextDouble())
                 loop (n+1) (tmp::acc)
         loop 0 []
 
-    ///Repeats the motif sampler until convergence or until a given number of repetitions is done.
-    let getMotifsWithBestInformationContents (numberOfRepetitions:int) (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
-        let rec loop (n:int) (acc:MotifIndex[]) (bestPWMS:MotifIndex[]) =
+    ///Repeats the motive sampler until convergence or until a given number of repetitions is done.
+    let getmotivesWithBestInformationContents (numberOfRepetitions:int) (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
+        let rec loop (n:int) (acc:motiveIndex[]) (bestPWMS:motiveIndex[]) =
             if n > numberOfRepetitions then
                 bestPWMS
             else
@@ -990,16 +990,16 @@ module MotifSampler =
                         loop (n + 1) [||] (if Array.isEmpty acc then bestPWMS else acc)
                     else
                         let pwms =
-                            SiteSampler.getPWMOfRandomStarts motifLength pseudoCount alphabet sources
-                            |> Array.map (fun (prob, position) -> createMotifIndex prob [position])
-                            |> findBestMotifIndicesByWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
-                            |> findBestMotifIndicesWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
+                            SiteSampler.getPWMOfRandomStarts motiveLength pseudoCount alphabet sources
+                            |> Array.map (fun (prob, position) -> createmotiveIndex prob [position])
+                            |> findBestmotiveIndicesByWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources
+                            |> findBestmotiveIndicesWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources
                         loop (n + 1) pwms bestPWMS
-        loop 0 [||] [|createMotifIndex 0. []|]
+        loop 0 [||] [|createmotiveIndex 0. []|]
 
-    ///Repeats the motif sampler until convergence or until a given number of repetitions is done.
-    let getBestPWMSsOfPPM (numberOfRepetitions:int) (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
-        let rec loop (n:int) (acc:MotifIndex[]) (bestPWMS:MotifIndex[]) =
+    ///Repeats the motive sampler until convergence or until a given number of repetitions is done.
+    let getBestPWMSsOfPPM (numberOfRepetitions:int) (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
+        let rec loop (n:int) (acc:motiveIndex[]) (bestPWMS:motiveIndex[]) =
             if n > numberOfRepetitions then
                 bestPWMS
             else
@@ -1018,21 +1018,21 @@ module MotifSampler =
                         loop (n + 1) [||] (if Array.isEmpty acc then bestPWMS else acc)
                     else
                         let pwms =
-                            SiteSampler.getMotifsWithBestPWMSOfPPM motifLength pseudoCount alphabet sources positionProbabilityMatrix
-                            |> Array.map (fun (prob, position) -> createMotifIndex prob [position])
-                            |> findBestMotifIndicesByWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
-                            |> findBestMotifIndicesWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
+                            SiteSampler.getmotivesWithBestPWMSOfPPM motiveLength pseudoCount alphabet sources positionProbabilityMatrix
+                            |> Array.map (fun (prob, position) -> createmotiveIndex prob [position])
+                            |> findBestmotiveIndicesByWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources
+                            |> findBestmotiveIndicesWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources
                         loop (n + 1) pwms bestPWMS
-        loop 0 [||] [|createMotifIndex 0. []|]
+        loop 0 [||] [|createmotiveIndex 0. []|]
 
-    let doMotifSamplingWithPPM (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
-        SiteSampler.getMotifsWithBestPWMSOfPPM motifLength pseudoCount alphabet sources positionProbabilityMatrix
-        |> Array.map (fun (prob, position) -> createMotifIndex prob [position])
-        |> findBestMotifIndicesByWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
-        |> findBestMotifIndicesWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
+    let domotiveSamplingWithPPM (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) (positionProbabilityMatrix:PositionMatrix.PositionProbabilityMatrix) =
+        SiteSampler.getmotivesWithBestPWMSOfPPM motiveLength pseudoCount alphabet sources positionProbabilityMatrix
+        |> Array.map (fun (prob, position) -> createmotiveIndex prob [position])
+        |> findBestmotiveIndicesByWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources
+        |> findBestmotiveIndicesWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources
 
-    let doMotifSampling (motifAmount:int) (motifLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
-        SiteSampler.getPWMOfRandomStarts motifLength pseudoCount alphabet sources
-        |> Array.map (fun (prob, position) -> createMotifIndex prob [position])
-        |> findBestMotifIndicesByWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
-        |> findBestMotifIndicesWithStartPositions motifAmount motifLength pseudoCount cutOff alphabet sources
+    let domotiveSampling (motiveAmount:int) (motiveLength:int) (pseudoCount:float) (cutOff:float) (alphabet:#IBioItem[]) (sources:BioArray.BioArray<#IBioItem>[]) =
+        SiteSampler.getPWMOfRandomStarts motiveLength pseudoCount alphabet sources
+        |> Array.map (fun (prob, position) -> createmotiveIndex prob [position])
+        |> findBestmotiveIndicesByWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources
+        |> findBestmotiveIndicesWithStartPositions motiveAmount motiveLength pseudoCount cutOff alphabet sources

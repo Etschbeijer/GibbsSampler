@@ -4,7 +4,7 @@ open System.Reflection
 
 [<assembly: AssemblyTitleAttribute("GibbsSamplingConsole")>]
 [<assembly: AssemblyProductAttribute("GibbsSampler")>]
-[<assembly: AssemblyDescriptionAttribute("Algorithm for motif finding.")>]
+[<assembly: AssemblyDescriptionAttribute("Algorithm for motive finding.")>]
 [<assembly: AssemblyVersionAttribute("0.0.1")>]
 [<assembly: AssemblyFileVersionAttribute("0.0.1")>]
 [<assembly: AssemblyConfigurationAttribute("Release")>]
@@ -13,7 +13,7 @@ do ()
 module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "GibbsSamplingConsole"
     let [<Literal>] AssemblyProduct = "GibbsSampler"
-    let [<Literal>] AssemblyDescription = "Algorithm for motif finding."
+    let [<Literal>] AssemblyDescription = "Algorithm for motive finding."
     let [<Literal>] AssemblyVersion = "0.0.1"
     let [<Literal>] AssemblyFileVersion = "0.0.1"
     let [<Literal>] AssemblyConfiguration = "Release"

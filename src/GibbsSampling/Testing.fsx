@@ -13,7 +13,7 @@ open BioFSharp
 open FSharpAux
 open GibbsSampling
 open SiteSampler
-open MotifSampler
+open motiveSampler
 
 #time
 
@@ -172,21 +172,21 @@ let completeFilledUpHSEConsensus =
         "TGAAGCTACAGGACTGATTTGGCGGGCTATGAGGG"   //HSP70A Promoter
         "cGAAggGCCgcGACggTTCgaGAAccGACttGAGg"   //HSP70A Promoter
         "CGAAGGTTCGATGAACAGGACAACCTGTCCCGTTG"   //HSP70G Promoter
-        "GGAAAGAACTCAAAGATTTCGCGGTGACGGCGTGA"   //HSP70G Promoter   //Motif found with HSP70G ending on PromoterSeq
+        "GGAAAGAACTCAAAGATTTCGCGGTGACGGCGTGA"   //HSP70G Promoter   //motive found with HSP70G ending on PromoterSeq
         "AAAACGTGATGGAAGGCCTGCCGTGCTCTGCTGAG"   //HSP70G Promoter    
         "GGACTTATCGCGTGGATTCTGGACTCCCGTGAGGG"   //CLPB3 Promoter
         "AGCGAGTTCGGGTACGTTCTGGCACGCGTGGCCTG"   //CLPB3 Promoter
         "GCTCCTTGCTTGAAGTTCTCGCTCTGTACGACAGA"   //CLPB3 Promoter
-        "CGAAGGTTCTCGAGGTTTCCGTGGGAGTGTGAATG"   //CLPB3 Promoter    //Motif found with HSP70G ending on PromoterSeq
+        "CGAAGGTTCTCGAGGTTTCCGTGGGAGTGTGAATG"   //CLPB3 Promoter    //motive found with HSP70G ending on PromoterSeq
         "TACACGTTCCGGTATTGTCCTTATTCGAAGGTTCT"   //CLPB3 Promoter
         "CACACATTCAAGTACTTAACGACTCACTGCAAAGA"   //HSF1 5'UTR
         "CCAGTTTTCCCGCAACTTTGCTTACACTTACTTTA"   //HSF1 5'UTR
-        "CGTTCTTTCTAGAAGCTTGCCAATGCTTTTAATGG"   //HSF1 5'UTR        //Motif found with HSP70G ending on PromoterSeq
-        "TGTGGTTTCGAGAAATGTAAGCTAGTGTGAATGCA"   //HSF1 Promoter     //Motif found with HSP70G ending on PromoterSeq
-        "GGAAAATTCGCGAGACTTGCAGCTCACAACTTCGC"   //CDJ1 5'UTR        //Motif found with HSP70G ending on PromoterSeq
+        "CGTTCTTTCTAGAAGCTTGCCAATGCTTTTAATGG"   //HSF1 5'UTR        //motive found with HSP70G ending on PromoterSeq
+        "TGTGGTTTCGAGAAATGTAAGCTAGTGTGAATGCA"   //HSF1 Promoter     //motive found with HSP70G ending on PromoterSeq
+        "GGAAAATTCGCGAGACTTGCAGCTCACAACTTCGC"   //CDJ1 5'UTR        //motive found with HSP70G ending on PromoterSeq
         "TGGAGGTTCCGCGAGGCCATGGGCGGAAAATTCGC"   //CDJ1 5'UTR
         "TGAATATGCATGCGTGTTATGCTTTCAATGCAGCC"   //CDJ1 Promoter
-        "TGGCCGGTGTTGAAACTCCTGCTAGCGATGCACCG"   //CDJ1 Promoter     //Motif found with HSP70G ending on PromoterSeq
+        "TGGCCGGTGTTGAAACTCCTGCTAGCGATGCACCG"   //CDJ1 Promoter     //motive found with HSP70G ending on PromoterSeq
         "AGAAGCTGCGTGGCATGTTGCTGGCCGGTGTTGAA"   //CDJ1 Promoter
         "AAGTACCTAGAGAGCATTCCCAAGTTGAGTCGGCC"   //CDJ1 Promoter
         "TGTGCATGCGTGTAGATCGTTGCAAATTCAGTGCG"   //LHCBM9 between 5'UTR beginning and ending
@@ -195,9 +195,9 @@ let completeFilledUpHSEConsensus =
         "CGCACTTTCGCCCAAACGTCGACGTGGTCTTTCTT"   //TIC110 Promoter
         "TTCACGTACAAGAAGTGCAAATTCAATTGAAACCT"   //TIC110 Promoter
         "AGACGCTTCTAGAGAAAGAACTTCAGAAAGTCCAG"   //TIC110 Promoter
-        "CCGGCCGGCAAGAAAGTTCAGTAGCGTACCTGCGA"   //TIC110 Promoter   //Motif found with HSP70G ending on PromoterSeq
+        "CCGGCCGGCAAGAAAGTTCAGTAGCGTACCTGCGA"   //TIC110 Promoter   //motive found with HSP70G ending on PromoterSeq
         "CTAAAAAGCCAGGAATTTCCCAAACTCAGAGCTGC"   //TIC40 Promoter
-        "AGGGAGTTCCAGAAGTTTGTGTCCAAACCGGTCGC"   //TIC40 Promoter    //Motif found with HSP70G ending on PromoterSeq
+        "AGGGAGTTCCAGAAGTTTGTGTCCAAACCGGTCGC"   //TIC40 Promoter    //motive found with HSP70G ending on PromoterSeq
         "GTGCAGTTCCTGGAAATAATGTAAACAAGCCCTGG"   //TIC40 Promoter
         "GTATGCTTGTAGAGACTTCATGTTCCGGGCCTTGC"   //TIC40 Promoter
         //"cGCAgcTTGcaGAAc--------------------"   //FFC
@@ -207,7 +207,7 @@ let completeFilledUpHSEConsensus =
         "CGAACATGACTGAATTGTCCAATCACAAACAACGA"   //MPA1 5'UTR
         "CCCTGGTTCTTGATCCAACGGGAGGCGCGCTTGAC"   //MPA1 5'UTR
         "TTAACCGACCGGAATGTTCCCTGGTTCTTGATCCA"   //MPA1 5'UTR
-        "GCCGCTTTCGAGTAAGTTCGGAGCACAAAACATCA"   //MPA1 5'UTR        //Motif found with HSP70G ending on PromoterSeq
+        "GCCGCTTTCGAGTAAGTTCGGAGCACAAAACATCA"   //MPA1 5'UTR        //motive found with HSP70G ending on PromoterSeq
 
         //"-GAA--TTC--GAA--TTC--GAA--TTC-" // HSE-Consensus
     |]
@@ -374,14 +374,14 @@ let aminoAcids  =
         AminoAcidSymbols.AminoAcidSymbol.Thr; AminoAcidSymbols.AminoAcidSymbol.Trp; AminoAcidSymbols.AminoAcidSymbol.Val;
     |]
 
-let testI = Array.init 1 (fun _ -> getMotifsWithBestInformationContent 1 6 0.0001 dnaBases bioTests)
+let testI = Array.init 1 (fun _ -> getmotivesWithBestInformationContent 1 6 0.0001 dnaBases bioTests)
 
 testI
 |> Array.countBy (fun items -> items |> Array.map (fun item -> snd item))
 |> Array.sortByDescending (fun (_, i) -> i)
 
 //let testII = 
-//    Array.init 1 (fun _ -> getMotifsWithBestInformationContent 1 7 0.0001 dnaBases bioTestsII)
+//    Array.init 1 (fun _ -> getmotivesWithBestInformationContent 1 7 0.0001 dnaBases bioTestsII)
 //    |> List.ofSeq
 
 //testII
@@ -397,13 +397,13 @@ testI
 //    |> Array.map (fun test -> BioArray.ofAminoAcidSymbolString test)
 //    |> Array.filter (fun item -> item.Length <> 0)
 
-let tmp = Array.init 1 (fun _ -> getMotifsWithBestInformationContents 1 2 6 0.0001 1. dnaBases bioTestsWithMultipleSamples)
+let tmp = Array.init 1 (fun _ -> getmotivesWithBestInformationContents 1 2 6 0.0001 1. dnaBases bioTestsWithMultipleSamples)
 
 tmp
 |> Array.countBy (fun items -> items |> Array.map (fun item -> item.Positions))
 |> Array.sortByDescending (fun (item, amount) -> amount)
 
-//let dataTest = Array.init 1 (fun _ -> getMotifsWithBestInformationContent 1 10 0.0001 dnaBases geneCollectionReduced)
+//let dataTest = Array.init 1 (fun _ -> getmotivesWithBestInformationContent 1 10 0.0001 dnaBases geneCollectionReduced)
 
 //dataTest
 //|> List.ofArray
@@ -511,13 +511,13 @@ let geneCollection2ndHalf =
 //for i=0 to test.Length-1 do
 //    printfn "%A" (getDefinedSegment 30 geneCollection1stHalf.[i] (snd test.[i]))
 
-//Found motifs size of 15 of ppmOfFirstHalf in genes of 2ndHalf
+//Found motives size of 15 of ppmOfFirstHalf in genes of 2ndHalf
 "ATGCGTGTAGATCGT"
 "GTTCAAGAAGACGCT"
 "GTTCCAGAAGTTTGT"
 "TTTCGAGTAAGTTCG"
 
-//Found motifs size of 10 of ppmOfSecondtHalf in genes of 1fstHalf
+//Found motives size of 10 of ppmOfSecondtHalf in genes of 1fstHalf
 "GGTTCGAGAA"
 "TTGCTTGAGG"
 "TTGCTTGAAG"
@@ -534,7 +534,7 @@ let geneCollection2ndHalf =
 //    |> fusePositionFrequencyMatrices hseConsensus2ndHalf.[0].Length
 //    |> getPositionProbabilityMatrix (hseConsensus2ndHalf.Length) dnaBases (0.0001)
 
-//let testMotifSampling = Array.init 1 (fun _ -> getBestPWMSsOfPPM 1 2 6 0.0001 10. dnaBases bioTestsWithMultipleSamples testPPM)
+//let testmotiveSampling = Array.init 1 (fun _ -> getBestPWMSsOfPPM 1 2 6 0.0001 10. dnaBases bioTestsWithMultipleSamples testPPM)
 
 let au5g5407_t1__Cre14g617400t11 =
     [|
@@ -1151,17 +1151,17 @@ let dataSet =
 //    |> fusePositionFrequencyMatrices trimmedHSEConsensus.[0].Length
 //    |> getPositionProbabilityMatrix (trimmedHSEConsensus.Length) dnaBases (0.0001)
 
-//let hseMotifSampling = doMotifSamplingWithPPM 6 10 0.0001 7.5 dnaBases dataSet.[0..5] hsePPM
-//    PSeq.init 10 (fun _ -> doMotifSamplingWithPPM 5 10 0.0001 10. dnaBases dataSet hsePPM)
+//let hsemotiveSampling = domotiveSamplingWithPPM 6 10 0.0001 7.5 dnaBases dataSet.[0..5] hsePPM
+//    PSeq.init 10 (fun _ -> domotiveSamplingWithPPM 5 10 0.0001 10. dnaBases dataSet hsePPM)
 //    |> Array.ofSeq
 
-//hseMotifSampling
+//hsemotiveSampling
 //|> Array.countBy (fun items -> items(* |> Array.map (fun item -> item.Positions)*))
 //|> Array.sortByDescending (fun (item, amount) -> amount)
 
 
-//Positions and probs at cutoff 1., motif amount 1 and motif length 10
-let oneMotif =
+//Positions and probs at cutoff 1., motive amount 1 and motive length 10
+let onemotive =
     [|
         {PWMS = 9.834315053;    Positions = [517];};    {PWMS = 9.332569549;        Positions = [137];}; 
         {PWMS = 7.163690943;    Positions = [298];};    {PWMS = 7.790494176;        Positions = [32];}; 
@@ -1196,8 +1196,8 @@ let oneMotif =
         {PWMS = 10.44684606;    Positions = [98];};     {PWMS = 8.482031534;        Positions = [96];}
     |]
 
-//Positions and probs at cutoff 5., motif amount 2 and motif length 10
-let twoMotifs =
+//Positions and probs at cutoff 5., motive amount 2 and motive length 10
+let twomotives =
     [|
         {PWMS = 38.3420492;     Positions = [306; 7];};     {PWMS = 38.72612873;    Positions = [137; 110];};
         {PWMS = 34.48027315;    Positions = [482; 302];};   {PWMS = 35.13794353;    Positions = [55; 32];};
@@ -1232,8 +1232,8 @@ let twoMotifs =
         {PWMS = 36.26114606;    Positions = [430; 98];};    {PWMS = 36.07154359;    Positions = [188; 96];}
     |]
 
-//Positions and probs at cutoff 7.5., motif amount 3 and motif length 10
-let threeMotifs =
+//Positions and probs at cutoff 7.5., motive amount 3 and motive length 10
+let threemotives =
     [|
         {PWMS = 7.54984697;         Positions = [420; 354; 306];};  {PWMS = 11.11003929;        Positions = [278; 72; 36];};
         {PWMS = 4.110787234e-06;    Positions = [];};               {PWMS = 2.687551998e-06;    Positions = [];}; 
@@ -1268,8 +1268,8 @@ let threeMotifs =
         {PWMS = 3.685508625e-06;    Positions = [];};               {PWMS = 2.437912654e-06;    Positions = [];}
     |]
 
-//Positions and probs at cutoff 10., motif amount 4 and motif length 10
-let fourMotifs =
+//Positions and probs at cutoff 10., motive amount 4 and motive length 10
+let fourmotives =
     [|
         {PWMS = 5.11782001e-06;     Positions = [];};                   {PWMS = 2.533653129e-06;    Positions = [];}; 
         {PWMS = 4.511019627e-06;    Positions = [];};                   {PWMS = 2.513731554e-06;    Positions = [];}; 
@@ -1304,8 +1304,8 @@ let fourMotifs =
         {PWMS = 4.816917586e-06;    Positions = [];};                   {PWMS = 2.463978637e-06;    Positions = [];}
     |]
 
-//Positions and probs at cutoff 10., motif amount 5 and motif length 10
-let fiveMotifs =
+//Positions and probs at cutoff 10., motive amount 5 and motive length 10
+let fivemotives =
     [|
         {PWMS = 5.12623009e-06;     Positions = [];};                           {PWMS = 2.61065042e-06; Positions = [];}; 
         {PWMS = 4.621104947e-06;    Positions = [];};                           {PWMS = 2.59628359e-06; Positions = [];}; 
@@ -1411,9 +1411,9 @@ let expressionRatesOnlyPromoters =
     |]
 
 expressionRatesOnlyPromoters
-|> Array.map (fun (_, value, motifCount) -> value/float motifCount)
+|> Array.map (fun (_, value, motiveCount) -> value/float motiveCount)
 
-let getLength (source:MotifIndex[]) =
+let getLength (source:motiveIndex[]) =
     let rec loop n acc =
         if n >= source.Length then List.rev acc
         else
@@ -1455,7 +1455,7 @@ let names =
         "au5g1951_t1__Cre01g049132t12"
     |]
 
-//let motifAmount =
+//let motiveAmount =
 //    expressionRates
 //    |> Array.map (fun (_, _, x) -> float x)
 
@@ -1467,11 +1467,11 @@ let names =
 //    expressionRates
 //    |> Array.map (fun (_, y, x) -> (y/float x))
 
-//(fun x y -> PearsonCorrelation().Similarity(x, y)) motifAmount expressionRate
+//(fun x y -> PearsonCorrelation().Similarity(x, y)) motiveAmount expressionRate
 
 //let values = expressionRate
 //let keys   = names
-//let labels = motifAmount
+//let labels = motiveAmount
 
 //Chart.Column(keys,values,Labels=labels,Opacity=0.3,Marker=Marker.init(Color="rgba(222,45,38,0.8)",Size=1)) // Changing the thickness of the bar is not possible at the moment
 //|> Chart.Show

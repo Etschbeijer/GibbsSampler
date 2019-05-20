@@ -92,17 +92,17 @@ let project = "GibbsSampler"
 
 // Short summary of the project
 // (used as description in AssemblyInfo and as a short summary for NuGet package)
-let summary = "Algorithm for motif finding."
+let summary = "Algorithm for motive finding."
 
 // Longer description of the project
 // (used as a description for NuGet package; line breaks are automatically cleaned up)
-let description = "MCMC Algorithm for motif finding."
+let description = "MCMC Algorithm for motive finding."
 
 // List of author names (for NuGet package)
 let author = "Etschbeijer"
 
 // Tags for your project (for NuGet package)
-let tags = "MotifFinding BioInformatics Motif Bayesian"
+let tags = "motiveFinding BioInformatics motive Bayesian"
 
 // File system information
 let solutionFile  = "GibbsSampling.sln"
@@ -284,7 +284,7 @@ let githubLink = sprintf "https://github.com/%s/%s" github_release_user gitName
 let info =
   [ "project-name", "GibbsSampler"
     "project-author", "Etschbeijer"
-    "project-summary", "Algorithm for motif finding."
+    "project-summary", "Algorithm for motive finding."
     "project-github", githubLink
     "project-nuget", "http://nuget.org/packages/GibbsSampler" ]
 

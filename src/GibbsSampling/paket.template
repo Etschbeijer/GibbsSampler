@@ -19,11 +19,11 @@ language
 copyright
     Copyright 2017
 tags
-    MotifFinding BioInformatics Motif Bayesian
+    motiveFinding BioInformatics motive Bayesian
 summary
-    Algorithm for motif finding.
+    Algorithm for motive finding.
 description
-    MCMC Algorithm for motif finding.
+    MCMC Algorithm for motive finding.
 
 files
 	../../bin/GibbsSampling ==> lib
