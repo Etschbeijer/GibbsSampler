@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Gibbs-Sampler
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Algorithm for motif finding." />
+    <meta name="author" content="Etschbeijer" />
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet" />
+    <meta http-equiv="X-UA-Compatible" content="IE=11">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/GibbsSampler/content/style.css" /> <!--/GibbsSampler-->
+    <link type="text/css" rel="stylesheet" href="/GibbsSampler/style/CSBstyles.css" /> <!--/GibbsSampler-->
+    <script type="text/javascript" src="/GibbsSampler/content/tips.js"></script> <!--/GibbsSampler-->
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+</head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/Etschbeijer/GibbsSampler">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/GibbsSampler/index.html">GibbsSampler</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<h1><a name="Gibbs-Sampler" class="anchor" href="#Gibbs-Sampler">Gibbs-Sampler</a></h1>
+<h3><a name="Motif-search-de-novo-or-with-prior-knowledge" class="anchor" href="#Motif-search-de-novo-or-with-prior-knowledge">Motif search de novo or with prior knowledge</a></h3>
+<h5><a name="In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology" class="anchor" href="#In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology">In this documentation the basic principles of the Gibbs-Sampling will be explained with a focus on its use in computational biology.</a></h5>
+<p>First the basic idea of the Gibbs-Sampling-Algorithm will be explained, together with the biological-background and goal of implementing this algorithm.
+After that, the working principle of the Gibbs-Algorithm will be explained with examples and then how to use the code.
+In the end is a short summarizing with the advanteages and disadvanteages of the algorithm.</p>
+<p>Gibbs-Sampling is an algorithm based on the Markov-Chain-Monte-Carlo method, which enables the calculation of a joint distribution
+solely based on conditional distributions without prior knowledge. In computational biology it is commonly used to find
+conserved segments, so called motifs, that are part of different sequences. Motifs can be, for example, transcription-factor-binding-sites in DNA or
+ligand-binding-sites in proteins. These binding-sites enable the binding of those elements, in order to regulate the activity of the target.
+Transcription-factor-binding-sites are often located in the promoter and 5'UTR of genes, which enable the regulation of the gene activity downstreams.</p>
+<p>My research-group researches the heath-shock-response of the alga Chlamydomonas reinhardtii by evaluating the proteome compositions of different mutants and
+targeting the corresponding genes. The goal of implementing this algorithm is to detect the transcription-factor-binding-sites of Heat-Shock-Factors (HSFs), proteins that
+regulate the gene-activity during heat-stress. These binding-sites are called Heat-Shock-Elements (HSEs) and it is suspected that they are located in many genes.
+Sadly, they are poorly conserved compared to the HSEs of other organims and we hope that we can detect more HSE regulated genes by implementing a Gibbs-Sampling-Algorithm!</p>
+
+
+        </div>
+        <div class="span3">
+          <img src="/GibbsSampler/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">GibbsSampler</li>
+            <li><a href="/GibbsSampler/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/GibbsSampler">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/Etschbeijer/GibbsSampler">Source Code on GitHub</a></li>
+            <li><a href="/GibbsSampler/license.html">License</a></li>
+            <li><a href="/GibbsSampler/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/GibbsSampler/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/GibbsSampler/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/Etschbeijer/GibbsSampler"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>
