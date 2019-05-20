@@ -1,0 +1,29 @@
+type file
+id GibbsSampling
+title
+    GibbsSampling
+owners
+    Etschbeijer
+authors 
+    Etschbeijer
+projectUrl
+    https://github.com/Etschbeijer/GibbsSampling
+iconUrl
+    https://raw.githubusercontent.com/Etschbeijer/GibbsSampling/master/docs/files/img/logo.png
+licenseUrl
+    https://github.com/Etschbeijer/GibbsSampling/blob/master/LICENSE.txt
+requireLicenseAcceptance
+    false
+language
+    F#
+copyright
+    Copyright 2017
+tags
+    MotifFinding BioInformatics Motif Bayesian
+summary
+    Algorithm for motif finding.
+description
+    MCMC Algorithm for motif finding.
+
+files
+	../../bin/GibbsSampling ==> lib
