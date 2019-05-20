@@ -50,6 +50,15 @@ Transcription-factor-binding-sites are often located in the promoter and 5'UTR o
 targeting the corresponding genes. The goal of implementing this algorithm is to detect the transcription-factor-binding-sites of Heat-Shock-Factors (HSFs), proteins that
 regulate the gene-activity during heat-stress. These binding-sites are called Heat-Shock-Elements (HSEs) and it is suspected that they are located in many genes.
 Sadly, they are poorly conserved compared to the HSEs of other organims and we hope that we can detect more HSE regulated genes by implementing a Gibbs-Sampling-Algorithm!</p>
+<p>There are two distinct types of Gibbs-Sampling-Algorithms, the Site-Sampler and Motif-Sampler. Both of them share the basic idea but while the Site-Sampler requires
+a motif in every sequence to work properly, the Motif-Sampler does not. The Motif-Sampler can also find multiple motifs per sequence, while the Site-Sampler can only find one
+but works faster and is more sensitive for less conserved structures then the Motif-Sampler. In order for both to wok proberly, the length of the sequence must be known.
+The core idea of the Site-Sampler will now be explained with an example:</p>
+<p>Your have four sequences (see figure XY) and you pick one at random and put it aside. After that you choose one segment with the length of your motif in every sequence you
+did not choose. Align these segments with eacht other and count the amount of elements at each position in order to create a so called Position-Frequency-Matrix (PPM) (see figure XY).
+Then we create a so called Frequency-Composite-Vector (FCV) by counting the amount of elements in the unchosen sequences without the elements that are part of the segments
+that are used to create the PPM.
+in every unchosen sequence.</p>
 
 
         </div>
