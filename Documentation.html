@@ -5,7 +5,7 @@
     <title>Gibbs-Sampler
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Algorithm for motif finding." />
+    <meta name="description" content="Algorithm for motive finding." />
     <meta name="author" content="Etschbeijer" />
 
     <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
@@ -36,29 +36,38 @@
         <div class="span9" id="main">
           
 <h1><a name="Gibbs-Sampler" class="anchor" href="#Gibbs-Sampler">Gibbs-Sampler</a></h1>
-<h3><a name="Motif-search-de-novo-or-with-prior-knowledge" class="anchor" href="#Motif-search-de-novo-or-with-prior-knowledge">Motif search de novo or with prior knowledge</a></h3>
+<h3><a name="motive-search-de-novo-or-with-prior-knowledge" class="anchor" href="#motive-search-de-novo-or-with-prior-knowledge">motive search de novo or with prior knowledge</a></h3>
 <h5><a name="In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology" class="anchor" href="#In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology">In this documentation the basic principles of the Gibbs-Sampling will be explained with a focus on its use in computational biology.</a></h5>
 <p>First the basic idea of the Gibbs-Sampling-Algorithm will be explained, together with the biological-background and goal of implementing this algorithm.
 After that, the working principle of the Gibbs-Algorithm will be explained with examples and then how to use the code.
 In the end is a short summarizing with the advanteages and disadvanteages of the algorithm.</p>
 <p>Gibbs-Sampling is an algorithm based on the Markov-Chain-Monte-Carlo method, which enables the calculation of a joint distribution
 solely based on conditional distributions without prior knowledge. In computational biology it is commonly used to find
-conserved segments, so called motifs, that are part of different sequences. Motifs can be, for example, transcription-factor-binding-sites in DNA or
+conserved segments, so called motives, that are part of different sequences. motives can be, for example, transcription-factor-binding-sites in DNA or
 ligand-binding-sites in proteins. These binding-sites enable the binding of those elements, in order to regulate the activity of the target.
 Transcription-factor-binding-sites are often located in the promoter and 5'UTR of genes, which enable the regulation of the gene activity downstreams.</p>
 <p>My research-group researches the heath-shock-response of the alga Chlamydomonas reinhardtii by evaluating the proteome compositions of different mutants and
 targeting the corresponding genes. The goal of implementing this algorithm is to detect the transcription-factor-binding-sites of Heat-Shock-Factors (HSFs), proteins that
 regulate the gene-activity during heat-stress. These binding-sites are called Heat-Shock-Elements (HSEs) and it is suspected that they are located in many genes.
 Sadly, they are poorly conserved compared to the HSEs of other organims and we hope that we can detect more HSE regulated genes by implementing a Gibbs-Sampling-Algorithm!</p>
-<p>There are two distinct types of Gibbs-Sampling-Algorithms, the Site-Sampler and Motif-Sampler. Both of them share the basic idea but while the Site-Sampler requires
-a motif in every sequence to work properly, the Motif-Sampler does not. The Motif-Sampler can also find multiple motifs per sequence, while the Site-Sampler can only find one
-but works faster and is more sensitive for less conserved structures then the Motif-Sampler. In order for both to wok proberly, the length of the sequence must be known.
+<p>There are two distinct types of Gibbs-Sampling-Algorithms, the Site-Sampler and motive-Sampler. Both of them share the basic idea but while the Site-Sampler requires
+a motive in every sequence to work properly, the motive-Sampler does not. The motive-Sampler can also find multiple motives per sequence, while the Site-Sampler can only find one
+but works faster and is more sensitive for less conserved structures then the motive-Sampler. In order for both to wok proberly, the length of the sequence must be known.
 The core idea of the Site-Sampler will now be explained with an example:</p>
-<p>Your have four sequences (see figure XY) and you pick one at random and put it aside. After that you choose one segment with the length of your motif in every sequence you
-did not choose. Align these segments with eacht other and count the amount of elements at each position in order to create a so called Position-Frequency-Matrix (PPM) (see figure XY).
-Then we create a so called Frequency-Composite-Vector (FCV) by counting the amount of elements in the unchosen sequences without the elements that are part of the segments
-that are used to create the PPM.
-in every unchosen sequence.</p>
+<p><img src="img/sequences1.png" alt="Figure 1" /></p>
+<p>Figure 1.</p>
+<p>You have four sequences (see Figure 1) and you pick one at random and put it aside.</p>
+<p><img src="img/sequences2.png" alt="Figure 2" /></p>
+<p>Figure 2.</p>
+<p>After that you choose one segment with the length of your motive in every sequence you
+did not choose (see Figure 2).</p>
+<p><img src="img/pfm.png" alt="Figure 3" /></p>
+<p>Figure 3.</p>
+<p>Align these segments with eacht other and count the amount of elements at each position in order to create a so called Position-Frequency-Matrix (PFM) (see Figure 3).</p>
+<p><img src="img/CFV.png" alt="Figure 4" /></p>
+<p>Figure 4.</p>
+<p>Then you create a so called Frequency-Composite-Vector (FCV) by counting the amount of elements in the unchosen sequences without the elements that are part of the segments
+that are used to create the PFM.</p>
 
 
         </div>
