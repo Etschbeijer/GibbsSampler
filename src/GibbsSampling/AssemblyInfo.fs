@@ -3,7 +3,7 @@ namespace System
 open System.Reflection
 
 [<assembly: AssemblyTitleAttribute("GibbsSampling")>]
-[<assembly: AssemblyProductAttribute("GibbsSampling")>]
+[<assembly: AssemblyProductAttribute("GibbsSampler")>]
 [<assembly: AssemblyDescriptionAttribute("Algorithm for motif finding.")>]
 [<assembly: AssemblyVersionAttribute("0.0.1")>]
 [<assembly: AssemblyFileVersionAttribute("0.0.1")>]
@@ -12,7 +12,7 @@ do ()
 
 module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "GibbsSampling"
-    let [<Literal>] AssemblyProduct = "GibbsSampling"
+    let [<Literal>] AssemblyProduct = "GibbsSampler"
     let [<Literal>] AssemblyDescription = "Algorithm for motif finding."
     let [<Literal>] AssemblyVersion = "0.0.1"
     let [<Literal>] AssemblyFileVersion = "0.0.1"

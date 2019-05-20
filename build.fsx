@@ -88,7 +88,7 @@ module TemporaryDocumentationHelpers =
 
 // The name of the project
 // (used by attributes in AssemblyInfo, name of a NuGet package and directory in 'src')
-let project = "GibbsSampling"
+let project = "GibbsSampler"
 
 // Short summary of the project
 // (used as description in AssemblyInfo and as a short summary for NuGet package)
@@ -119,12 +119,12 @@ let gitOwner = "Etschbeijer"
 let gitHome = sprintf "%s/%s" "https://github.com" gitOwner
 
 // The name of the project on GitHub
-let gitName = "GibbsSampling"
+let gitName = "GibbsSampler"
 
 // The url for the raw files hosted
 let gitRaw = Environment.environVarOrDefault "gitRaw" "https://raw.githubusercontent.com/Etschbeijer"
 
-let website = "/GibbsSampling"
+let website = "/GibbsSampler"
 
 // --------------------------------------------------------------------------------------
 // END TODO: The rest of the file includes standard build steps
@@ -282,11 +282,11 @@ let githubLink = sprintf "https://github.com/%s/%s" github_release_user gitName
 
 // Specify more information about your project
 let info =
-  [ "project-name", "GibbsSampling"
+  [ "project-name", "GibbsSampler"
     "project-author", "Etschbeijer"
     "project-summary", "Algorithm for motif finding."
     "project-github", githubLink
-    "project-nuget", "http://nuget.org/packages/GibbsSampling" ]
+    "project-nuget", "http://nuget.org/packages/GibbsSampler" ]
 
 let root = website
 
