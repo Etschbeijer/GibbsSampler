@@ -1,15 +1,13 @@
 (**
-#Gibbs-Sampler
+Gibbs-Sampler
 ==============
-###motif search de novo or with prior knowledge
+motif search de novo or with prior knowledge
 -----------------------------------------------
 
 
 #####In this documentation the basic principles of the Gibbs-Sampling will be explained with a focus on its use in computational biology.
+Also does this project build currently on top of [BioFSharp](https://csbiology.github.io/BioFSharp/) and will be integrated at a later step.
 
-First the basic idea of the Gibbs-Sampling-Algorithm will be explained, together with the biological-background and goal of implementing this algorithm. 
-After that, the working principle of the Gibbs-Algorithm will be explained with examples and then how to use the code. 
-In the end is a short summarizing with the advantages and disadvantages of the algorithm.
 
 Gibbs-Sampling is an algorithm based on the Markov-Chain-Monte-Carlo method, which enables the calculation of a joint distribution
 solely based on conditional distributions without prior knowledge. In computational biology it is commonly used to find 
@@ -236,7 +234,7 @@ at random, which biases the matrix to find more similiar motifs. Even when it ca
 can be increased and randomness reduced with more knowledge. But still, the alggorithm has the problem of being heuristic and not finding the 
 same motifs and so several repetitions and result comparrisons are needed. Also can local maxima be a problem but their burden can be reduced, 
 thanks to the shift functions.
-The Gibbs-Sampling-Algorithm is a useful tool to find conserved structures in biological sequences because it is easy to use and besides it heuristic
-nature it works reliable.
+The Gibbs-Sampling-Algorithm is a useful tool to find conserved structures in biological sequences because it is easy to use and besides its heuristic
+nature, it works reliable.
 Thank you for reading this long post! Good luck with your motif search!
 *)
