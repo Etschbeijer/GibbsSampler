@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>#Gibbs-Sampler
+    <title>Gibbs-Sampler
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Algorithm for motive finding." />
@@ -35,12 +35,10 @@
       <div class="row">
         <div class="span9" id="main">
           
-<h1><a name="Gibbs-Sampler" class="anchor" href="#Gibbs-Sampler">#Gibbs-Sampler</a></h1>
-<h2><a name="motif-search-de-novo-or-with-prior-knowledge" class="anchor" href="#motif-search-de-novo-or-with-prior-knowledge">###motif search de novo or with prior knowledge</a></h2>
+<h1><a name="Gibbs-Sampler" class="anchor" href="#Gibbs-Sampler">Gibbs-Sampler</a></h1>
+<h2><a name="motif-search-de-novo-or-with-prior-knowledge" class="anchor" href="#motif-search-de-novo-or-with-prior-knowledge">motif search de novo or with prior knowledge</a></h2>
 <h5><a name="In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology" class="anchor" href="#In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology">In this documentation the basic principles of the Gibbs-Sampling will be explained with a focus on its use in computational biology.</a></h5>
-<p>First the basic idea of the Gibbs-Sampling-Algorithm will be explained, together with the biological-background and goal of implementing this algorithm.
-After that, the working principle of the Gibbs-Algorithm will be explained with examples and then how to use the code.
-In the end is a short summarizing with the advantages and disadvantages of the algorithm.</p>
+<p>Also does this project build currently on top of <a href="https://csbiology.github.io/BioFSharp/">BioFSharp</a> and will be integrated at a later step.</p>
 <p>Gibbs-Sampling is an algorithm based on the Markov-Chain-Monte-Carlo method, which enables the calculation of a joint distribution
 solely based on conditional distributions without prior knowledge. In computational biology it is commonly used to find
 conserved segments, so called motifs, that are part of different sequences. Motifs are segments of sequences with a similar structure and can be, for example,
@@ -301,8 +299,8 @@ at random, which biases the matrix to find more similiar motifs. Even when it ca
 can be increased and randomness reduced with more knowledge. But still, the alggorithm has the problem of being heuristic and not finding the
 same motifs and so several repetitions and result comparrisons are needed. Also can local maxima be a problem but their burden can be reduced,
 thanks to the shift functions.
-The Gibbs-Sampling-Algorithm is a useful tool to find conserved structures in biological sequences because it is easy to use and besides it heuristic
-nature it works reliable.
+The Gibbs-Sampling-Algorithm is a useful tool to find conserved structures in biological sequences because it is easy to use and besides its heuristic
+nature, it works reliable.
 Thank you for reading this long post! Good luck with your motif search!</p>
 
 <div class="tip" id="fs1">namespace BioFSharp</div>
@@ -377,8 +375,8 @@ Thank you for reading this long post! Good luck with your motif search!</p>
               <li><a href="/GibbsSampler/license.html">License</a></li>
               <li><a href="/GibbsSampler/release-notes.html">Release Notes</a></li>
 
-              <li class="nav-header">Getting started</li>
-              <li><a href="/GibbsSampler/tutorial.html">Sample tutorial</a></li>
+              
+              
 
               <li class="nav-header">Documentation</li>
               <li><a href="/GibbsSampler/reference/index.html">API Reference</a></li>
