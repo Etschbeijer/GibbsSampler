@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Gibbs-Sampler
+    <title>#Gibbs-Sampler
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Algorithm for motive finding." />
@@ -35,8 +35,8 @@
       <div class="row">
         <div class="span9" id="main">
           
-<h1><a name="Gibbs-Sampler" class="anchor" href="#Gibbs-Sampler">Gibbs-Sampler</a></h1>
-<h3><a name="motif-search-de-novo-or-with-prior-knowledge" class="anchor" href="#motif-search-de-novo-or-with-prior-knowledge">motif search de novo or with prior knowledge</a></h3>
+<h1><a name="Gibbs-Sampler" class="anchor" href="#Gibbs-Sampler">#Gibbs-Sampler</a></h1>
+<h2><a name="motif-search-de-novo-or-with-prior-knowledge" class="anchor" href="#motif-search-de-novo-or-with-prior-knowledge">###motif search de novo or with prior knowledge</a></h2>
 <h5><a name="In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology" class="anchor" href="#In-this-documentation-the-basic-principles-of-the-Gibbs-Sampling-will-be-explained-with-a-focus-on-its-use-in-computational-biology">In this documentation the basic principles of the Gibbs-Sampling will be explained with a focus on its use in computational biology.</a></h5>
 <p>First the basic idea of the Gibbs-Sampling-Algorithm will be explained, together with the biological-background and goal of implementing this algorithm.
 After that, the working principle of the Gibbs-Algorithm will be explained with examples and then how to use the code.
@@ -54,30 +54,36 @@ Sadly, they are poorly conserved compared to the HSEs of other organims and we h
 a motif in every sequence to work properly, the motif-Sampler does not. The motif-Sampler can also find multiple motifs per sequence, while the Site-Sampler can only find one
 but works faster and is more sensitive for less conserved structures then the motif-Sampler. In order for both to wok proberly, the length of the sequence must be known.
 The core idea of the Site-Sampler will now be explained with an example:</p>
-<p><img src="img/sequences1.png" alt="Figure 1" /> Figure 1. <img src="img/sequences2.png" alt="Figure 2" /> Figure 2.</p>
+<p><img src="img/sequences1.png" alt="Figure 1" /></p>
+<h4><a name="Figure-1" class="anchor" href="#Figure-1">Figure 1.</a></h4>
+<p><img src="img/sequences2.png" alt="Figure 2" /></p>
+<h4><a name="Figure-2" class="anchor" href="#Figure-2">Figure 2.</a></h4>
 <p>You have four sequences (see Figure 1) and you pick one at random and put it aside. After that you choose one segment with the length of your motif in every sequence you
 did not choose (see Figure 2).</p>
 <p><img src="img/pfm.png" alt="Figure 3" /></p>
-<p>Figure 3.</p>
+<h4><a name="Figure-3" class="anchor" href="#Figure-3">Figure 3.</a></h4>
 <p><img src="img/ppm.png" alt="Figure 4" /></p>
-<p>Figure 4.</p>
+<h4><a name="Figure-4" class="anchor" href="#Figure-4">Figure 4.</a></h4>
 <p>Align these segments with eacht other and count the amount of elements at each position in order to create a so called Position-Frequency-Matrix (PFM) (see Figure 3).
 In the next step ypu create a so called position probability matrix by adding a pseudocount to each element at each position and normalize by dividing each element at
 each position through the sum of the column (see Figure 4). You add a pseudocount in order to avoid dividing through zero because often times the segments are rather short and do not
 contain every element and it is still possible to encounter one in the rest of the sequence.</p>
-<p><img src="img/cfv.png" alt="Figure 5" /> Figure 5.  <img src="img/SegmentScore.png" alt="Figure 6" /> Figure 6.</p>
+<p><img src="img/cfv.png" alt="Figure 5" /></p>
+<h4><a name="Figure-5" class="anchor" href="#Figure-5">Figure 5.</a></h4>
+<p><img src="img/SegmentScore.png" alt="Figure 6" /></p>
+<h4><a name="Figure-6" class="anchor" href="#Figure-6">Figure 6.</a></h4>
 <p>Then you create a so called Frequency-Composite-Vector (FCV) by counting the amount of elements in the unchosen sequences without the elements that are part of the segments
 that are used to create the PFM. In the following you work with the chosen sequence by increasing the counts of the vector with amount of elements in this sequence and add a pseudocount to each element.<br />
 The PPM is now used to calculate the likelyhood of each segment to be a motif by multiplying the likelyhoods of the found elements to be at that position (see Figure 4 &amp; 6).</p>
 <p><img src="img/pcm.png" alt="Figure 7" /></p>
-<p>Figure 7.</p>
+<h4><a name="Figure-7" class="anchor" href="#Figure-7">Figure 7.</a></h4>
 <p>Now that the segment likelyhoods are calculated it is time to check, how different they are from the background. For that, the FCV is tuned by creating a new FCV for every segment.
 For that, the count of eacht element is substracted from the total counts of elements in the FCV but it must not be smaller than the pseudocount. This is done because some input sequences are
 very small and significant element combinations (e.g. several Ts in a row) could get low weight because they are otherwise evenly distributed. So by reducing the count for the segment, their weight
 is increased. After that the FCVs are normalized by dividing every element count by the the sum of the vector. These new vectors are Probability-Composite-Vectors (PCV) and represent the likelyhood to pick a
 element by chance when picking a random element from the sequences (see Figure 7).</p>
 <p><img src="img/pwms.png" alt="Figure 8" /></p>
-<p>Figure 8.</p>
+<h4><a name="Figure-8" class="anchor" href="#Figure-8">Figure 8.</a></h4>
 <p>The PCVs are then used to calculate the likelyhood for a segment to be background by multiplying the likelyhood of the element to be picked at random in the segment. To calculate this likelyhood only the
 PCVs that were created without the elements of the segment are used and these new background segment scores are used to normalize the PPM segment score in the earlier step. The result of this division is then
 log2 transformed to get the so called Position-Weight-Matrix-Score (PWMS). Based on the PWMSs in Figure 8, PWMS is more likely to be a conserved motif and would be remembered (see Figure 8).
