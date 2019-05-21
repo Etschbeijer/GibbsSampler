@@ -13,7 +13,6 @@ open BioFSharp
 open FSharpAux
 open GibbsSampling
 open SiteSampler
-open motiveSampler
 
 #time
 
@@ -86,28 +85,15 @@ let aminoAcids  =
         AminoAcidSymbols.AminoAcidSymbol.Thr; AminoAcidSymbols.AminoAcidSymbol.Trp; AminoAcidSymbols.AminoAcidSymbol.Val;
     |]
 
-let testI = Array.init 1 (fun _ -> getmotivesWithBestInformationContent 1 6 0.0001 dnaBases bioTests)
+let testI = Array.init 10000 (fun _ -> getmotifsWithBestInformationContent 10000 6 0.0001 dnaBases bioTests)
 
 testI
 |> Array.countBy (fun items -> items |> Array.map (fun item -> snd item))
 |> Array.sortByDescending (fun (_, i) -> i)
 
-//let testII = 
-//    Array.init 1 (fun _ -> getmotivesWithBestInformationContent 1 7 0.0001 dnaBases bioTestsII)
-//    |> List.ofSeq
+let testII = Array.init 1 (fun _ -> getmotifsWithBestInformationContent 1 7 0.0001 dnaBases bioTestsII)
 
-//testII
-//|> List.map (fun (items) -> items |> Array.map (fun (_, y) -> y))
-//|> groupEquals
-//|> List.sortByDescending (fun (_, i) -> i)
-
-//for i=0 to testII.[0].Length-1 do
-//    printfn "%A" (getDefinedSegment 20 geneCollection.[i] (snd testII.[0].[i]))
-
-//let realTest =
-//    fromFileObo fileDir1
-//    |> Array.map (fun test -> BioArray.ofAminoAcidSymbolString test)
-//    |> Array.filter (fun item -> item.Length <> 0)
-
-//let tmp = Array.init 1 (fun _ -> getmotivesWithBestInformationContents 1 2 6 0.0001 1. dnaBases bioTestsWithMultipleSamples)
+testII
+|> Array.countBy (fun items -> items |> Array.map (fun item -> snd item))
+|> Array.sortByDescending (fun (_, i) -> i)
 
